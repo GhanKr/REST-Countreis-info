@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;700&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <nav class="header">
+        <div class="header-wrapper flex padding">
+            <div class="title bold font1">Where in the World?</div>
+            <div class="dark-mode-option bold">
+                <i class="fa-solid fa-moon"></i>
+                Dark Mode
+            </div>
+        </div>
+
+    </nav>
+    <div class="search-filter padding flex">
+        <div class="search flex">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" name="" id="" placeholder="Search for a Country....">
+        </div>
+        <div class="filter bold">
+            <select name="Region" id="filter">
+                <option value="Filter by Region" style="display: none;">Filter by Region</option>
+                <option value="Africa">Africa</option>
+                <option value="America">America</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="Oceania">Oceania</option>
+            </select>
+        </div>
+    </div>
+    <div class="main-body flex padding"></div>
+
+    <div class="countries-detail-wrapper padding flex">
+        <div class="back">
+            <button>
+                <i class="fa-solid fa-arrow-left"></i>Back</button>
+        </div>
+        <div class="country-detail-info flex">
+            <div class="country-flag">
+                <img src="" alt="">
+            </div>
+            <div class="wrapper flex">
+                <div class="name bold font2">India</div>
+                <div class="description flex">
+                    <div class="first-column flex">
+                        <div class="country-population"></div>
+                        <div class="country-region"></div>
+                        <div class="sub-region"></div>
+                        <div class="country-capital"></div>
+                    </div>
+                    <div class="second-column flex">
+                        <div class="tld"></div>
+                        <div class="currency"></div>
+                        <div class="languages"></div>
+                    </div>
+                </div>
+                <div class="borders flex">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <template id="Countries-box">
+        <div class="country">
+            <div class="flag"></div>
+            <div class="country-name font1 bold"></div>
+            <div class="country-info flex">
+                <div class="population"></div>
+                <div class="region"></div>
+                <div class="capital"></div>
+            </div>
+        </div>
+
+
+    </template>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
