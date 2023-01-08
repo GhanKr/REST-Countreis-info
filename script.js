@@ -20,7 +20,7 @@ let initialCountries = [
 countryDetails.style.display = "none";
 backButton.style.display = "none";
 
-//display initial page at starting
+//display initial page at initial loading time
 initialCountries.forEach((element) => {
   //fetch for each country
   call(`https://restcountries.com/v3.1/name/${element}`).then((data) => {
