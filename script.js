@@ -1,79 +1,112 @@
-const backButton = document.querySelector('button')
-const input = document.querySelector('input');
-const body = document.querySelector('body');
-const mainBody = document.querySelector('.main-body');
-const region = document.querySelector('select');
-const searchAndFilterContainer = document.querySelector('.search-filter')
-const darkMode = document.querySelector('.dark-mode-option')
-const countryDetails = document.querySelector('.country-detail-info')
-let initialCountries = ['germany', 'United States', 'Brazil', 'Iceland', 'Afghanistan', 'Åland Islands', 'Albania', 'Algeria']
+const backButton = document.querySelector("button");
+const input = document.querySelector("input");
+const body = document.querySelector("body");
+const mainBody = document.querySelector(".main-body");
+const region = document.querySelector("select");
+const searchAndFilterContainer = document.querySelector(".search-filter");
+const darkMode = document.querySelector(".dark-mode-option");
+const countryDetails = document.querySelector(".country-detail-info");
+let initialCountries = [
+  "germany",
+  "United States",
+  "Brazil",
+  "Iceland",
+  "Afghanistan",
+  "Åland Islands",
+  "Albania",
+  "Algeria",
+];
 
-countryDetails.style.display = 'none';
-backButton.style.display = 'none';
+countryDetails.style.display = "none";
+backButton.style.display = "none";
 
-initialCountries.forEach(async (element) => {
-    const data = await call(`https://restcountries.com/v3.1/name/${element}`);
-    const country = countryGenerator(data[0])
-    mainBody.append(country)
-})
+//display initial page at starting
+initialCountries.forEach((element) => {
+  //fetch for each country
+  call(`https://restcountries.com/v3.1/name/${element}`).then((data) => {
+    const country = countryGenerator(data[0]);
+    mainBody.append(country);
+  });
+});
 
-body.addEventListener('click', e => {
-    const country = document.querySelectorAll('.country');
-    country.forEach(element => {
-        if (element.contains(e.target)) {
-            const mainBody = document.querySelector('.main-body')
-            mainBody.style.display = 'none'
-            document.querySelector('.search-filter').style.display = 'none'
-            backButton.style.display = '';
-            displayCountryInfoInDetail(element)
-        }
+body.addEventListener("click", (e) => {
+  const country = document.querySelectorAll(".country");
 
-    })
-    if (darkMode.contains(e.target))
-        body.classList.toggle('dark-mode')
-
-    if (region.contains(e.target))
-        filterByRegion(e)
-
-    if (backButton.contains(e.target)) {
-        mainBody.style.display = 'flex';
-        document.querySelector('.search-filter').style.display = 'flex';
-        document.querySelector('.country-detail-info').style.display = 'none';
-        backButton.style.display = 'none'
+  //to display specific country info in details targeted by user
+  country.forEach((element) => {
+    if (element.contains(e.target)) {
+      const mainBody = document.querySelector(".main-body");
+      mainBody.style.display = "none";
+      document.querySelector(".search-filter").style.display = "none";
+      backButton.style.display = "";
+      displayCountryInfoInDetail(element);
     }
-})
+  });
+  // dark mode option
+  if (darkMode.contains(e.target)) body.classList.toggle("dark-mode");
+  // listen for filter event if happened
+  if (region.contains(e.target)) filterByRegion(e);
+  // if Go back button clicked
+  if (backButton.contains(e.target)) {
+    mainBody.style.display = "flex";
+    document.querySelector(".search-filter").style.display = "flex";
+    document.querySelector(".country-detail-info").style.display = "none";
+    backButton.style.display = "none";
+  }
+});
 
-input.addEventListener('keyup', async (e) => {
-    const input = document.querySelector('input');
-    const str = `https://restcountries.com/v3.1/name/${input.value}`;
-    const data = await call(str);
-    display(data)
-})
+//listen for search event of a country by user
+input.addEventListener("keyup", async (e) => {
+  const input = document.querySelector("input");
+  const initialCountriesList = await call(
+    `https://restcountries.com/v3.1/name/${input.value}`
+  );
 
-async function call(str) {
-    const respnse = await fetch(str);
-    const data = await respnse.json();
-    return data;
+  //to render list of all the country found;
+  display(initialCountriesList, countryGenerator);
+});
+
+// generic fetch request to return a json format data
+function call(str) {
+  return fetch(str)
+    .then((jsonData) => jsonData.json())
+    .then((data) => data);
 }
 
+//Display a single country details only
 async function displayCountryInfoInDetail(country) {
-    const countryName = country.querySelector('.country-name').textContent;
-    const data = await call(`https://restcountries.com/v3.1/name/${countryName}`);
-    countryDetails.querySelector('.borders').textContent = 'Border Countries:'
-    let borders = data[0].borders != null ? Object.values(data[0].borders) : undefined;
-    if (borders != undefined) {
-        for (let i = 0; i < borders.length; i++) {
-            let str = borders[i]
-            const data = await call(`https://restcountries.com/v3.1/alpha/${str}`);
-            console.log(data[0].population)
-            const div = document.createElement('div');
-            div.setAttribute('class', 'border')
-            div.textContent = data[0].name.common;
-            countryDetails.querySelector('.borders').append(div);
-        }
+  const countryName = country.querySelector(".country-name").textContent;
+  //wait for the country data returned
+  const data = await call(`https://restcountries.com/v3.1/name/${countryName}`);
+
+  //to fetch and display all the borders of a country
+  countryDetails.querySelector(".borders").textContent = "Border Countries:";
+  //check for if borders exists or not
+  let borders =
+    data[0].borders != null ? Object.values(data[0].borders) : undefined;
+
+  // if border exists
+  if (borders != undefined) {
+    let bordersPromises = [];
+
+    //fetch all borders and store its promise in array
+    for (let i = 0; i < borders.length; i++) {
+      let str = borders[i];
+      bordersPromises.push(call(`https://restcountries.com/v3.1/alpha/${str}`));
     }
-    else
-        countryDetails.querySelector('.borders').append(' none')
+
+    //after all the promised fetched and fulfilled
+    Promise.all(bordersPromises).then((borderArray) => {
+      borderArray.forEach((border) => {
+        const div = document.createElement("div");
+        div.setAttribute("class", "border");
+        div.textContent = border[0].name.common;
+        countryDetails.querySelector(".borders").append(div);
+      });
+    });
+  } else countryDetails.querySelector(".borders").append(" none");
+
+    //display country general info
     countryDetails.querySelector('.country-flag img').src = `${data[0].flags.svg}`
     countryDetails.querySelector('.name').textContent = countryName;
     countryDetails.querySelector('.country-population').textContent = `Population: ${data[0].population}`
@@ -86,37 +119,37 @@ async function displayCountryInfoInDetail(country) {
 
     mainBody.style.display = 'none'
     document.querySelector('.country-detail-info').style.display = 'flex'
-
 }
 
+//when user wants to filter by region
 async function filterByRegion(e) {
-    const str = `https://restcountries.com/v3.1/region/${e.target.value}`;
-    let data = await call(str);
-    display(data);
+  let filterdCountriesList = await call(`https://restcountries.com/v3.1/region/${e.target.value}`);
+  display(filterdCountriesList, countryGenerator);
 }
 
-function display(data, respnse) {
-    mainBody.textContent = "";
-    data.forEach(element => {
-        const country = countryGenerator(element);
-        mainBody.append(country);
-    });
+// display list of all the countries fetched, accepts list of countries and call back to render it individually
+function display(countriesList, cb) {
+  mainBody.textContent = "";
+  countriesList.forEach((country) => {
+    mainBody.append(cb(country));
+  });
 }
 
-function countryGenerator(element) {
-    const template = document.getElementById('Countries-box');
-    const country = template.content.cloneNode(true)
-    const name = country.querySelector('.country-name')
-    const flag = country.querySelector('.flag')
-    const region = country.querySelector('.region');
-    const capital = country.querySelector('.capital')
-    const population = country.querySelector('.population')
-    const img = document.createElement('img')
-    img.src = element.flags.svg;
-    name.append(`${element.name.common}`)
-    flag.append(img);
-    capital.append(`Capital: ${element.capital[0]}`)
-    population.append(`Population: ${element.population}`)
-    region.append(`Region: ${element.region}`)
-    return country;
+//display a country individually
+function countryGenerator(country) {
+  const template = document.getElementById("Countries-box");
+  const countryContainer = template.content.cloneNode(true);
+  const name = countryContainer.querySelector(".country-name");
+  const flag = countryContainer.querySelector(".flag");
+  const region = countryContainer.querySelector(".region");
+  const capital = countryContainer.querySelector(".capital");
+  const population = countryContainer.querySelector(".population");
+  const img = document.createElement("img");
+  img.src = country.flags.svg;
+  name.append(`${country.name.common}`);
+  flag.append(img);
+  capital.append(`Capital: ${country.capital[0]}`);
+  population.append(`Population: ${country.population}`);
+  region.append(`Region: ${country.region}`);
+  return countryContainer;
 }
