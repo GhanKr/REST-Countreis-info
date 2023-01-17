@@ -105,7 +105,6 @@ async function displayCountryInfoInDetail(country) {
       });
     });
   } else countryDetails.querySelector(".borders").append(" none");
-
     //display country general info
     countryDetails.querySelector('.country-flag img').src = `${data[0].flags.svg}`
     countryDetails.querySelector('.name').textContent = countryName;
@@ -114,7 +113,7 @@ async function displayCountryInfoInDetail(country) {
     countryDetails.querySelector('.sub-region').textContent = `Sub Region: ${data[0].subregion}`
     countryDetails.querySelector('.country-capital').textContent = `Capital: ${data[0].capital}`
     countryDetails.querySelector('.tld').textContent = `Top Level Domain: ${data[0].tld}`
-    countryDetails.querySelector('.currency').textContent = `Currency: ${Object.values(data[0].currencies)}`
+    countryDetails.querySelector('.currency').textContent = `Currency: ${(Object.values(data[0].currencies))[0].name}`
     countryDetails.querySelector('.languages').textContent = `Languages: ${Object.values(data[0].languages)}`;
 
     mainBody.style.display = 'none'
@@ -153,6 +152,8 @@ function countryGenerator(country) {
   region.append(`Region: ${country.region}`);
   return countryContainer;
 }
+
+//display population with comma attached.
 function getPopulation(population){
   let populationArray=population.split("");
   populationArray.reverse();
