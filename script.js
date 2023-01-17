@@ -77,7 +77,7 @@ function call(str) {
 async function displayCountryInfoInDetail(country) {
   const countryName = country.querySelector(".country-name").textContent;
   //wait for the country data returned
-  const data = await call(`https://restcountries.com/v3.1/name/${countryName}`);
+  const data = await call(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`);
 
   //to fetch and display all the borders of a country
   countryDetails.querySelector(".borders").textContent = "Border Countries:";
@@ -122,7 +122,7 @@ async function displayCountryInfoInDetail(country) {
 
 //when user wants to filter by region
 async function filterByRegion(e) {
-  let filterdCountriesList = await call(`https://restcountries.com/v3.1/region/${e.target.value}`);
+  let filterdCountriesList = await call(`https://restcountries.com/v3.1/region/${e.target.value}?fullText=true`);
   display(filterdCountriesList, countryGenerator);
 }
 
