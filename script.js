@@ -109,7 +109,7 @@ async function displayCountryInfoInDetail(country) {
     //display country general info
     countryDetails.querySelector('.country-flag img').src = `${data[0].flags.svg}`
     countryDetails.querySelector('.name').textContent = countryName;
-    countryDetails.querySelector('.country-population').textContent = `Population: ${data[0].population}`
+    countryDetails.querySelector('.country-population').textContent = `Population:  ${getPopulation(data[0].population.toString())}`
     countryDetails.querySelector('.country-region').textContent = `Region: ${data[0].region}`
     countryDetails.querySelector('.sub-region').textContent = `Sub Region: ${data[0].subregion}`
     countryDetails.querySelector('.country-capital').textContent = `Capital: ${data[0].capital}`
@@ -149,7 +149,17 @@ function countryGenerator(country) {
   name.append(`${country.name.common}`);
   flag.append(img);
   capital.append(`Capital: ${country.capital[0]}`);
-  population.append(`Population: ${country.population}`);
+  population.append(`Population: ${getPopulation(country.population.toString())}`);
   region.append(`Region: ${country.region}`);
   return countryContainer;
+}
+function getPopulation(population){
+  let populationArray=population.split("");
+  populationArray.reverse();
+  return populationArray.reduce((result,char,idx) =>{
+    if (idx % 3 === 0) result = char + ',' + result;
+    else
+      result = char + result
+     return result;
+  })
 }
