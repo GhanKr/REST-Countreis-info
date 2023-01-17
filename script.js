@@ -56,14 +56,14 @@ body.addEventListener("click", (e) => {
 });
 
 //listen for search event of a country by user
-input.addEventListener("keyup", async (e) => {
-  const input = document.querySelector("input");
+input.addEventListener("input", async (e) => {
+  const input = e.target.value.toLowerCase();
   const initialCountriesList = await call(
-    `https://restcountries.com/v3.1/name/${input.value}`
+    `https://restcountries.com/v3.1/name/${input}`
   );
-
+  let moreRefinedCountriesList = initialCountriesList.filter( country => country.name.common.toLowerCase().includes(input));
   //to render list of all the country found;
-  display(initialCountriesList, countryGenerator);
+  display(moreRefinedCountriesList, countryGenerator);
 });
 
 // generic fetch request to return a json format data
