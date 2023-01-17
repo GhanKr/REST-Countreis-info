@@ -147,7 +147,7 @@ function countryGenerator(country) {
   img.src = country.flags.svg;
   name.append(`${country.name.common}`);
   flag.append(img);
-  capital.append(`Capital: ${country.capital[0]}`);
+  capital.append(`Capital: ${country.capital}`);
   population.append(`Population: ${getPopulation(country.population.toString())}`);
   region.append(`Region: ${country.region}`);
   return countryContainer;
